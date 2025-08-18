@@ -16,12 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class LoginController {
+public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-
     private final MyUserDetailsService userDetailsService;
-
     private final JwtUtil jwtTokenUtil;
 
     @PostMapping("/authenticate")

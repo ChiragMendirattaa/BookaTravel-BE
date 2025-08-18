@@ -3,6 +3,7 @@ package com.example.roledefine.controller;
 import com.example.roledefine.dto.RegistrationRequest;
 import com.example.roledefine.service.UserService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
