@@ -1,8 +1,6 @@
 package com.example.roledefine.controller;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +25,9 @@ public String getAdminDashboard() {
     @GetMapping("/user/dashboard")
     public String getUserDashboard() {
         return "Hello User";
+    }
+    @GetMapping("/user/demo")
+    public String getDemo(){
+    return "Demo";
     }
 }
