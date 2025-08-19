@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AuthenticationResponse {
+public class LoginResponse {
     private final String jwt;
 }

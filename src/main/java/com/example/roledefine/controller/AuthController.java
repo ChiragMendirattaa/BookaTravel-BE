@@ -1,7 +1,7 @@
 package com.example.roledefine.controller;
 
-import com.example.roledefine.dto.AuthenticationRequest;
-import com.example.roledefine.dto.AuthenticationResponse;
+import com.example.roledefine.dto.LoginRequest;
+import com.example.roledefine.dto.LoginResponse;
 import com.example.roledefine.dto.RegistrationRequest;
 import com.example.roledefine.service.MyUserDetailsService;
 import com.example.roledefine.service.UserService;
@@ -25,24 +25,24 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequest loginRequest) throws Exception {
 
-        System.out.println(">>> /authenticate endpoint was hit with username: " + authenticationRequest.getUsername());
+        System.out.println(">>> /authenticate endpoint was hit with username: " + loginRequest.getUsername());
 
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
             );
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
 
         final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getUsername());
+                .loadUserByUsername(loginRequest.getUsername());
 
         final String jwt = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(new LoginResponse(jwt));
     }
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest registrationRequest) {
