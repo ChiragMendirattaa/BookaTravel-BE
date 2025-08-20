@@ -1,5 +1,6 @@
 package com.example.roledefine.service;
 
+import com.example.roledefine.dto.flight.request.FlightFareRuleRequest;
 import com.example.roledefine.dto.flight.request.FlightRevalidateRequest;
 import com.example.roledefine.dto.flight.request.FlightSearchRequest;
 import com.example.roledefine.exception.FlightSearchException;
@@ -17,6 +18,7 @@ public class FlightService {
 
     private static final String FLIGHT_SEARCH_PATH = "aeroVE5/availability";
     private static final String FLIGHT_REVALIDATE_PATH = "aeroVE5/revalidate";
+    private static final String FLIGHT_FARE_RULE_PATH = "aeroVE5/fare_rules";
 
     private final WebClient flightWebClient;
 
@@ -63,6 +65,29 @@ public class FlightService {
         } catch (Exception e) {
             log.error("Failed to revalidate flight", e);
             throw new FlightSearchException("Unable to revalidate flight");
+        }
+    }
+
+    public String fareRuleFlight(FlightFareRuleRequest flightFareRuleRequest) {
+        try {
+            String rawJson = flightWebClient.post()
+                    .uri(FLIGHT_FARE_RULE_PATH)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .bodyValue(flightFareRuleRequest)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            if (rawJson == null || rawJson.isBlank()) {
+                throw new FlightSearchException("Empty response from fare rule API");
+            }
+
+            log.info("Raw fare rule response: {}", rawJson);
+            return rawJson;
+
+        } catch (Exception e) {
+            log.error("Failed to fetch fare rule response", e);
+            throw new FlightSearchException("Unable to retrieve fare rule data");
         }
     }
 }
