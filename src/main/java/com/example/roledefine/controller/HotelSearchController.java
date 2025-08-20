@@ -1,6 +1,7 @@
 package com.example.roledefine.controller;
 
 import com.example.roledefine.dto.hoteldto.request.HotelSearchRequest;
+import com.example.roledefine.dto.hoteldto.request.RoomRatesRequestDTO;
 import com.example.roledefine.service.HotelSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -29,5 +30,10 @@ public class HotelSearchController {
                                         @RequestParam String tokenId,
                                         @RequestParam String productId) {
         return hotelSearchService.getHotelDetails(hotelId, sessionId, tokenId, productId);
+    }
+
+    @PostMapping("/room-rates")
+    public Mono<String> getRoomRates(@RequestBody RoomRatesRequestDTO request) {
+        return hotelSearchService.getRoomRates(request);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.roledefine.service;
 
 import com.example.roledefine.dto.hoteldto.request.HotelSearchRequest;
+import com.example.roledefine.dto.hoteldto.request.RoomRatesRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,6 @@ public class HotelSearchService {
 
     public Mono<String> getMoreResults(String sessionId, String nextToken) {
         log.info("Fetching next page with dedicated pagination URL for session: {}", sessionId);
-
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/hotel_trawexv6/moreResultsPagination")
@@ -50,7 +50,6 @@ public class HotelSearchService {
                 .bodyToMono(String.class)
                 .doOnNext(raw -> log.info("Fetched next page of hotel results."));
     }
-
 
     private Mono<String> fetchPage(HotelSearchRequest request) {
         return webClient.post()
@@ -77,5 +76,22 @@ public class HotelSearchService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .doOnNext(raw -> log.info("Fetched hotel content for hotelId: {}", hotelId));
+    }
+
+    public Mono<String> getRoomRates(RoomRatesRequestDTO request) {
+        log.info("Fetching room rates for hotelId: {}", request.getHotelId());
+
+        request.setUser_id(apiUserId);
+        request.setUser_password(apiPassword);
+        request.setAccess(apiAccess);
+        request.setIp_address(apiIpAddress);
+
+        return webClient.post()
+                .uri("/hotel_trawexv6/get_room_rates")
+                .header("Content-Type", "application/json")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(String.class)
+                .doOnNext(raw -> log.info("Fetched room rates for hotelId: {}", request.getHotelId()));
     }
 }
