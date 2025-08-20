@@ -1,5 +1,6 @@
 package com.example.roledefine.controller;
 
+import com.example.roledefine.dto.hoteldto.request.CheckRoomRatesRequestDTO; // <-- Import
 import com.example.roledefine.dto.hoteldto.request.HotelSearchRequest;
 import com.example.roledefine.dto.hoteldto.request.RoomRatesRequestDTO;
 import com.example.roledefine.service.HotelSearchService;
@@ -35,5 +36,10 @@ public class HotelSearchController {
     @PostMapping("/room-rates")
     public Mono<String> getRoomRates(@RequestBody RoomRatesRequestDTO request) {
         return hotelSearchService.getRoomRates(request);
+    }
+
+    @PostMapping("/check-rates")
+    public Mono<String> checkRoomRates(@RequestBody CheckRoomRatesRequestDTO request) {
+        return hotelSearchService.checkRoomRates(request);
     }
 }
