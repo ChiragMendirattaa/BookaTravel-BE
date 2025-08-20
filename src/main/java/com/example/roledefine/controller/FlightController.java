@@ -1,11 +1,13 @@
 package com.example.roledefine.controller;
 
+import com.example.roledefine.dto.flight.request.FlightFareRuleRequest;
 import com.example.roledefine.dto.flight.request.FlightRevalidateRequest;
 import com.example.roledefine.dto.flight.request.FlightSearchRequest;
 import com.example.roledefine.exception.FlightSearchException;
 import com.example.roledefine.service.FlightService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,12 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class FlightController {
 
-    private final FlightService flightSearchService;
+    private final FlightService flightService;
 
     @PostMapping("/search")
     public ResponseEntity<?> searchFlights(@RequestBody FlightSearchRequest request) {
         try {
-            String rawResponse = flightSearchService.searchFlightsRaw(request);
+            String rawResponse = flightService.searchFlightsRaw(request);
             return ResponseEntity.ok(rawResponse);
         } catch (FlightSearchException e) {
             log.warn("Flight search failed: {}", e.getMessage());
@@ -37,7 +39,7 @@ public class FlightController {
     @PostMapping("/revalidate")
     public ResponseEntity<?> revalidateFlight(@RequestBody FlightRevalidateRequest flightRevalidateRequest) {
         try {
-            String rawResponse = flightSearchService.revalidateFlight(flightRevalidateRequest);
+            String rawResponse = flightService.revalidateFlight(flightRevalidateRequest);
             return ResponseEntity.ok(rawResponse);
         } catch (FlightSearchException e) {
             log.warn("Flight revalidation failed: {}", e.getMessage());
@@ -45,6 +47,20 @@ public class FlightController {
         } catch (Exception e) {
             log.error("Unexpected error during flight revalidation", e);
             return ResponseEntity.status(500).body("Internal server error");
+        }
+    }
+
+    @PostMapping("/fare-rules")
+    public ResponseEntity<?> fareRuleFlight(@RequestBody FlightFareRuleRequest flightFareRuleRequest) {
+        try {
+            String rawResponse = flightService.fareRuleFlight(flightFareRuleRequest);
+            return ResponseEntity.ok(rawResponse);
+        } catch (FlightSearchException e) {
+            log.warn("Fare rule retrieval failed: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error while fetching fare rules", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
         }
     }
 }
