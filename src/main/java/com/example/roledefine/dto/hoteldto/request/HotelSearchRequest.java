@@ -1,7 +1,6 @@
 package com.example.roledefine.dto.hoteldto.request;
 
 import com.example.roledefine.dto.OccupancyDTO;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
