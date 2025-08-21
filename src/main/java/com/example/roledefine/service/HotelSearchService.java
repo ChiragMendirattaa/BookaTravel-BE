@@ -1,8 +1,9 @@
 package com.example.roledefine.service;
 
-import com.example.roledefine.dto.hoteldto.request.CheckRoomRatesRequestDTO;
-import com.example.roledefine.dto.hoteldto.request.HotelSearchRequest;
-import com.example.roledefine.dto.hoteldto.request.RoomRatesRequestDTO;
+import com.example.roledefine.dto.hoteldto.request.*;
+import com.example.roledefine.entity.HotelTransaction;
+import com.example.roledefine.repository.HotelTransactionRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,16 +12,16 @@ import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor // <-- ADD this annotation for cleaner dependency injection
+@RequiredArgsConstructor
 public class HotelSearchService {
 
     private final WebClient webClient;
-    private final CredentialProvider credentialProvider; // <-- INJECT the new provider
-
-    // The @Value annotations have been REMOVED from this file.
+    private final CredentialProvider credentialProvider;
+    private final HotelTransactionRepository hotelTransactionRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Mono<String> searchHotels(HotelSearchRequest request) {
-        credentialProvider.populate(request); // <-- USE the provider
+        credentialProvider.populate(request);
         return fetchPage(request);
     }
 
@@ -66,7 +67,7 @@ public class HotelSearchService {
 
     public Mono<String> getRoomRates(RoomRatesRequestDTO request) {
         log.info("Fetching room rates for hotelId: {}", request.getHotelId());
-        credentialProvider.populate(request); // <-- USE the provider
+        credentialProvider.populate(request);
         return webClient.post()
                 .uri("/hotel_trawexv6/get_room_rates")
                 .header("Content-Type", "application/json")
@@ -78,7 +79,7 @@ public class HotelSearchService {
 
     public Mono<String> checkRoomRates(CheckRoomRatesRequestDTO request) {
         log.info("Checking rate rules for productId: {}", request.getProductId());
-        credentialProvider.populate(request); // <-- USE the provider
+        credentialProvider.populate(request);
         return webClient.post()
                 .uri("/hotel_trawexv6/get_rate_rules")
                 .header("Content-Type", "application/json")
@@ -88,5 +89,31 @@ public class HotelSearchService {
                 .doOnNext(raw -> log.info("Checked rate rules for productId: {}", request.getProductId()));
     }
 
-    // The private helper method has been MOVED to the CredentialProvider
+    public Mono<String> initiateBooking(HotelBookingRequestDTO request) {
+        log.info("Initiating booking for productId: {}", request.getProductId());
+
+        HotelTransaction transaction = new HotelTransaction();
+        transaction.setSessionId(request.getSessionId());
+        transaction.setProductId(request.getProductId());
+        transaction.setTokenId(request.getTokenId());
+        transaction.setRateBasisId(request.getRateBasisId());
+        transaction.setBookingStatus("INITIALIZED");
+
+        try {
+            String guestData = objectMapper.writeValueAsString(request.getGuests());
+            transaction.setGuestData(guestData);
+        } catch (Exception e) {
+            log.error("Error serializing guest data", e);
+            return Mono.error(new RuntimeException("Could not process guest information."));
+        }
+
+        hotelTransactionRepository.save(transaction);
+        log.info("Saved initial transaction with ID: {}", transaction.getId());
+
+        String fakeClientSecret = "pi_" + transaction.getId() + "_secret_mockedfortesting";
+        transaction.setPaymentIntentId("pi_" + transaction.getId());
+        hotelTransactionRepository.save(transaction);
+
+        return Mono.just("{\"clientSecret\": \"" + fakeClientSecret + "\"}");
+    }
 }

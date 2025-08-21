@@ -1,8 +1,6 @@
 package com.example.roledefine.controller;
 
-import com.example.roledefine.dto.hoteldto.request.CheckRoomRatesRequestDTO;
-import com.example.roledefine.dto.hoteldto.request.HotelSearchRequest;
-import com.example.roledefine.dto.hoteldto.request.RoomRatesRequestDTO;
+import com.example.roledefine.dto.hoteldto.request.*; // Import all
 import com.example.roledefine.service.HotelSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +13,7 @@ public class HotelSearchController {
 
     private final HotelSearchService hotelSearchService;
 
+    // Endpoints for steps 1-5...
     @PostMapping("/search")
     public Mono<String> searchHotels(@RequestBody HotelSearchRequest request) {
         return hotelSearchService.searchHotels(request);
@@ -41,5 +40,11 @@ public class HotelSearchController {
     @PostMapping("/check-rates")
     public Mono<String> checkRoomRates(@RequestBody CheckRoomRatesRequestDTO request) {
         return hotelSearchService.checkRoomRates(request);
+    }
+
+    // NEW ENDPOINT FOR STEP 6
+    @PostMapping("/initiate-booking")
+    public Mono<String> initiateBooking(@RequestBody HotelBookingRequestDTO request) {
+        return hotelSearchService.initiateBooking(request);
     }
 }
