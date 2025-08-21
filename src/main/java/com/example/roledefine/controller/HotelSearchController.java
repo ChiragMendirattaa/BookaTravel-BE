@@ -1,6 +1,6 @@
 package com.example.roledefine.controller;
 
-import com.example.roledefine.dto.hoteldto.request.*; // Import all
+import com.example.roledefine.dto.hoteldto.request.*;
 import com.example.roledefine.service.HotelSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,38 +13,26 @@ public class HotelSearchController {
 
     private final HotelSearchService hotelSearchService;
 
-    // Endpoints for steps 1-5...
     @PostMapping("/search")
-    public Mono<String> searchHotels(@RequestBody HotelSearchRequest request) {
-        return hotelSearchService.searchHotels(request);
-    }
+    public Mono<String> searchHotels(@RequestBody HotelSearchRequest request) { return hotelSearchService.searchHotels(request); }
 
     @GetMapping("/more-results")
-    public Mono<String> getMoreResults(@RequestParam String sessionId, @RequestParam String nextToken) {
-        return hotelSearchService.getMoreResults(sessionId, nextToken);
-    }
+    public Mono<String> getMoreResults(@RequestParam String sessionId, @RequestParam String nextToken) { return hotelSearchService.getMoreResults(sessionId, nextToken); }
 
     @GetMapping("/{hotelId}")
-    public Mono<String> getHotelDetails(@PathVariable String hotelId,
-                                        @RequestParam String sessionId,
-                                        @RequestParam String tokenId,
-                                        @RequestParam String productId) {
-        return hotelSearchService.getHotelDetails(hotelId, sessionId, tokenId, productId);
-    }
+    public Mono<String> getHotelDetails(@PathVariable String hotelId, @RequestParam String sessionId, @RequestParam String tokenId, @RequestParam String productId) { return hotelSearchService.getHotelDetails(hotelId, sessionId, tokenId, productId); }
 
     @PostMapping("/room-rates")
-    public Mono<String> getRoomRates(@RequestBody RoomRatesRequestDTO request) {
-        return hotelSearchService.getRoomRates(request);
-    }
+    public Mono<String> getRoomRates(@RequestBody RoomRatesRequestDTO request) { return hotelSearchService.getRoomRates(request); }
 
     @PostMapping("/check-rates")
-    public Mono<String> checkRoomRates(@RequestBody CheckRoomRatesRequestDTO request) {
-        return hotelSearchService.checkRoomRates(request);
-    }
+    public Mono<String> checkRoomRates(@RequestBody CheckRoomRatesRequestDTO request) { return hotelSearchService.checkRoomRates(request); }
 
-    // NEW ENDPOINT FOR STEP 6
     @PostMapping("/initiate-booking")
-    public Mono<String> initiateBooking(@RequestBody HotelBookingRequestDTO request) {
-        return hotelSearchService.initiateBooking(request);
+    public Mono<String> initiateBooking(@RequestBody HotelBookingRequestDTO request) { return hotelSearchService.initiateBooking(request); }
+
+    @PostMapping("/confirm-booking")
+    public Mono<String> confirmBooking(@RequestBody ConfirmBookingRequestDTO request) {
+        return hotelSearchService.confirmBooking(request);
     }
 }
