@@ -14,17 +14,13 @@ public class HotelTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String sessionId;
-    private String productId;
-    private String tokenId;
-    private String rateBasisId;
+    @Column(length = 4000)
+    private String bookingRequestData;
 
     private String bookingStatus;
-
-    @Column(length = 2000)
-    private String guestData;
-
     private String paymentIntentId;
+    private String referenceNum;
+    private String supplierConfirmationNum;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
