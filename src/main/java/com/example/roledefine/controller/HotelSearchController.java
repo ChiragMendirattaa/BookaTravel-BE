@@ -1,6 +1,6 @@
 package com.example.roledefine.controller;
 
-import com.example.roledefine.dto.hoteldto.request.CheckRoomRatesRequestDTO; // <-- Import
+import com.example.roledefine.dto.hoteldto.request.CheckRoomRatesRequestDTO;
 import com.example.roledefine.dto.hoteldto.request.HotelSearchRequest;
 import com.example.roledefine.dto.hoteldto.request.RoomRatesRequestDTO;
 import com.example.roledefine.service.HotelSearchService;

@@ -3,9 +3,8 @@ package com.example.roledefine.service;
 import com.example.roledefine.dto.hoteldto.request.CheckRoomRatesRequestDTO;
 import com.example.roledefine.dto.hoteldto.request.HotelSearchRequest;
 import com.example.roledefine.dto.hoteldto.request.RoomRatesRequestDTO;
-import lombok.RequiredArgsConstructor; // <-- ADD this import
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-// import org.springframework.beans.factory.annotation.Value; // <-- REMOVE this import
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

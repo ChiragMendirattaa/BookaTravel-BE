@@ -16,15 +16,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class FlightService {
 
-    private static final String FLIGHT_SEARCH_PATH = "aeroVE5/availability";
-    private static final String FLIGHT_REVALIDATE_PATH = "aeroVE5/revalidate";
-    private static final String FLIGHT_FARE_RULE_PATH = "aeroVE5/fare_rules";
+    private static final String FLIGHT_SEARCH_PATH = "/aeroVE5/availability";
+    private static final String FLIGHT_REVALIDATE_PATH = "/aeroVE5/revalidate";
+    private static final String FLIGHT_FARE_RULE_PATH = "/aeroVE5/fare_rules";
 
-    private final WebClient flightWebClient;
+    private final WebClient webClient;
 
     public String searchFlightsRaw(FlightSearchRequest request) {
         try {
-            String rawJson = flightWebClient.post()
+            String rawJson = webClient.post()
                     .uri(FLIGHT_SEARCH_PATH)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .bodyValue(request)
@@ -47,7 +47,7 @@ public class FlightService {
 
     public String revalidateFlight(FlightRevalidateRequest flightRevalidateRequest) {
         try {
-            String rawJson = flightWebClient.post()
+            String rawJson = webClient.post()
                     .uri(FLIGHT_REVALIDATE_PATH)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .bodyValue(flightRevalidateRequest)
@@ -70,7 +70,7 @@ public class FlightService {
 
     public String fareRuleFlight(FlightFareRuleRequest flightFareRuleRequest) {
         try {
-            String rawJson = flightWebClient.post()
+            String rawJson = webClient.post()
                     .uri(FLIGHT_FARE_RULE_PATH)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .bodyValue(flightFareRuleRequest)
