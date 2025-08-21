@@ -1,36 +1,27 @@
 package com.example.roledefine.service;
 
-import com.example.roledefine.dto.hoteldto.request.*;
+import com.example.roledefine.dto.hoteldto.request.CheckRoomRatesRequestDTO;
+import com.example.roledefine.dto.hoteldto.request.HotelSearchRequest;
+import com.example.roledefine.dto.hoteldto.request.RoomRatesRequestDTO;
+import lombok.RequiredArgsConstructor; // <-- ADD this import
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+// import org.springframework.beans.factory.annotation.Value; // <-- REMOVE this import
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor // <-- ADD this annotation for cleaner dependency injection
 public class HotelSearchService {
 
     private final WebClient webClient;
+    private final CredentialProvider credentialProvider; // <-- INJECT the new provider
 
-    @Value("${travelnext.api.user_id}")
-    private String apiUserId;
-
-    @Value("${travelnext.api.password}")
-    private String apiPassword;
-
-    @Value("${travelnext.api.access}")
-    private String apiAccess;
-
-    @Value("${travelnext.api.ip_address}")
-    private String apiIpAddress;
-
-    public HotelSearchService(WebClient travelNextWebClient) {
-        this.webClient = travelNextWebClient;
-    }
+    // The @Value annotations have been REMOVED from this file.
 
     public Mono<String> searchHotels(HotelSearchRequest request) {
-        populateCredentials(request);
+        credentialProvider.populate(request); // <-- USE the provider
         return fetchPage(request);
     }
 
@@ -76,7 +67,7 @@ public class HotelSearchService {
 
     public Mono<String> getRoomRates(RoomRatesRequestDTO request) {
         log.info("Fetching room rates for hotelId: {}", request.getHotelId());
-        populateCredentials(request);
+        credentialProvider.populate(request); // <-- USE the provider
         return webClient.post()
                 .uri("/hotel_trawexv6/get_room_rates")
                 .header("Content-Type", "application/json")
@@ -88,10 +79,9 @@ public class HotelSearchService {
 
     public Mono<String> checkRoomRates(CheckRoomRatesRequestDTO request) {
         log.info("Checking rate rules for productId: {}", request.getProductId());
-        populateCredentials(request);
-
+        credentialProvider.populate(request); // <-- USE the provider
         return webClient.post()
-                .uri("/hotel_trawexv6/get_rate_rules") // <-- CORRECTED URL
+                .uri("/hotel_trawexv6/get_rate_rules")
                 .header("Content-Type", "application/json")
                 .bodyValue(request)
                 .retrieve()
@@ -99,10 +89,5 @@ public class HotelSearchService {
                 .doOnNext(raw -> log.info("Checked rate rules for productId: {}", request.getProductId()));
     }
 
-    private void populateCredentials(BaseRequest request) {
-        request.setUser_id(apiUserId);
-        request.setUser_password(apiPassword);
-        request.setAccess(apiAccess);
-        request.setIp_address(apiIpAddress);
-    }
+    // The private helper method has been MOVED to the CredentialProvider
 }

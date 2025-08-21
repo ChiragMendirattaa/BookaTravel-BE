@@ -9,13 +9,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
-    @Bean
-    public WebClient flightWebClient() {
-        return WebClient.builder()
-                .baseUrl("https://travelnext.works/api/")
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();
-    }
+//    @Bean
+//    public WebClient flightWebClient() {
+//        return WebClient.builder()
+//                .baseUrl("https://travelnext.works/api/")
+//                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+//                .build();
+//    }
 
     @Bean
     public WebClient.Builder webClientBuilder() {
@@ -23,10 +23,10 @@ public class WebClientConfig {
     }
 
     @Bean
-    public WebClient travelNextWebClient(WebClient.Builder builder) {
-        return builder
+    public WebClient travelNextWebClient() {
+        return WebClient.builder()
                 .baseUrl("https://travelnext.works/api")
-                .defaultHeader("Content-Type", "application/json")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
 }

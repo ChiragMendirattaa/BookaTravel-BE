@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public abstract class BaseRequest {
+
     private String user_id;
     private String user_password;
     private String access;
