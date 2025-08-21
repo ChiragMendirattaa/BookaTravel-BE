@@ -32,7 +32,10 @@ public class HotelSearchController {
     public Mono<String> initiateBooking(@RequestBody HotelBookingRequestDTO request) { return hotelSearchService.initiateBooking(request); }
 
     @PostMapping("/confirm-booking")
-    public Mono<String> confirmBooking(@RequestBody ConfirmBookingRequestDTO request) {
-        return hotelSearchService.confirmBooking(request);
+    public Mono<String> confirmBooking(@RequestBody ConfirmBookingRequestDTO request) { return hotelSearchService.confirmBooking(request); }
+
+    @PostMapping("/booking-details")
+    public Mono<String> getBookingDetails(@RequestBody BookingDetailsRequestDTO request) {
+        return hotelSearchService.getBookingDetails(request);
     }
 }
