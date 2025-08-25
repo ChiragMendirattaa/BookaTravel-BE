@@ -1,5 +1,6 @@
 package com.example.roledefine.service;
 
+import com.example.roledefine.dto.flight.request.FlightBookingRequest;
 import com.example.roledefine.dto.flight.request.FlightFareRuleRequest;
 import com.example.roledefine.dto.flight.request.FlightRevalidateRequest;
 import com.example.roledefine.dto.flight.request.FlightSearchRequest;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class FlightService {
     private static final String FLIGHT_SEARCH_PATH = "/aeroVE5/availability";
     private static final String FLIGHT_REVALIDATE_PATH = "/aeroVE5/revalidate";
     private static final String FLIGHT_FARE_RULE_PATH = "/aeroVE5/fare_rules";
+    private static final String FLIGHT_BOOKING_PATH = "/aeroVE5/booking";
 
     private final WebClient webClient;
 
@@ -88,6 +91,33 @@ public class FlightService {
         } catch (Exception e) {
             log.error("Failed to fetch fare rule response", e);
             throw new FlightSearchException("Unable to retrieve fare rule data");
+        }
+    }
+
+    public String bookFlight(FlightBookingRequest flightBookingRequest) {
+        try {
+            // Log the full request payload for debugging
+            log.debug("Booking request payload: {}", flightBookingRequest);
+
+            String rawJson = webClient.post()
+                    .uri(FLIGHT_BOOKING_PATH)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaType.APPLICATION_JSON) // Ensure supplier knows you're expecting JSON
+                    .bodyValue(flightBookingRequest)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            if (rawJson == null || rawJson.isBlank()) {
+                throw new FlightSearchException("Empty response from booking API");
+            }
+
+            log.info("Raw booking response: {}", rawJson);
+            return rawJson;
+
+        } catch (Exception e) {
+            log.error("Failed to book flight", e);
+            throw new FlightSearchException("Unable to complete flight booking");
         }
     }
 }

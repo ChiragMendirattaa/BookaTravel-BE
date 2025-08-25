@@ -1,5 +1,6 @@
 package com.example.roledefine.controller;
 
+import com.example.roledefine.dto.flight.request.FlightBookingRequest;
 import com.example.roledefine.dto.flight.request.FlightFareRuleRequest;
 import com.example.roledefine.dto.flight.request.FlightRevalidateRequest;
 import com.example.roledefine.dto.flight.request.FlightSearchRequest;
@@ -60,6 +61,20 @@ public class FlightController {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
         } catch (Exception e) {
             log.error("Unexpected error while fetching fare rules", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+        }
+    }
+
+    @PostMapping("/initiate-booking")
+    public ResponseEntity<?> bookFlight(@RequestBody FlightBookingRequest flightBookingRequest) {
+        try {
+            String rawResponse = flightService.bookFlight(flightBookingRequest);
+            return ResponseEntity.ok(rawResponse);
+        } catch (FlightSearchException e) {
+            log.warn("Flight booking failed: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error during flight booking", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
         }
     }
