@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/hotels")
 @RequiredArgsConstructor
@@ -13,29 +15,12 @@ public class HotelSearchController {
 
     private final HotelSearchService hotelSearchService;
 
-    @PostMapping("/search")
-    public Mono<String> searchHotels(@RequestBody HotelSearchRequest request) { return hotelSearchService.searchHotels(request); }
-
-    @GetMapping("/more-results")
-    public Mono<String> getMoreResults(@RequestParam String sessionId, @RequestParam String nextToken) { return hotelSearchService.getMoreResults(sessionId, nextToken); }
-
-    @GetMapping("/{hotelId}")
-    public Mono<String> getHotelDetails(@PathVariable String hotelId, @RequestParam String sessionId, @RequestParam String tokenId, @RequestParam String productId) { return hotelSearchService.getHotelDetails(hotelId, sessionId, tokenId, productId); }
-
-    @PostMapping("/room-rates")
-    public Mono<String> getRoomRates(@RequestBody RoomRatesRequestDTO request) { return hotelSearchService.getRoomRates(request); }
-
-    @PostMapping("/check-rates")
-    public Mono<String> checkRoomRates(@RequestBody CheckRoomRatesRequestDTO request) { return hotelSearchService.checkRoomRates(request); }
-
-    @PostMapping("/initiate-booking")
-    public Mono<String> initiateBooking(@RequestBody HotelBookingRequestDTO request) { return hotelSearchService.initiateBooking(request); }
-
-    @PostMapping("/confirm-booking")
-    public Mono<String> confirmBooking(@RequestBody ConfirmBookingRequestDTO request) { return hotelSearchService.confirmBooking(request); }
-
-    @PostMapping("/booking-details")
-    public Mono<String> getBookingDetails(@RequestBody BookingDetailsRequestDTO request) {
-        return hotelSearchService.getBookingDetails(request);
-    }
+    @PostMapping("/search") public Mono<String> searchHotels(@RequestBody HotelSearchRequest request) { return hotelSearchService.searchHotels(request); }
+    @GetMapping("/more-results") public Mono<String> getMoreResults(@RequestParam String sessionId, @RequestParam String nextToken) { return hotelSearchService.getMoreResults(sessionId, nextToken); }
+    @GetMapping("/{hotelId}") public Mono<String> getHotelDetails(@PathVariable String hotelId, @RequestParam String sessionId, @RequestParam String tokenId, @RequestParam String productId) { return hotelSearchService.getHotelDetails(hotelId, sessionId, tokenId, productId); }
+    @PostMapping("/room-rates") public Mono<String> getRoomRates(@RequestBody RoomRatesRequestDTO request) { return hotelSearchService.getRoomRates(request); }
+    @PostMapping("/check-rates") public Mono<String> checkRoomRates(@RequestBody CheckRoomRatesRequestDTO request) { return hotelSearchService.checkRoomRates(request); }
+    @PostMapping("/confirm-booking") public Mono<String> confirmBooking(@RequestBody ConfirmBookingRequestDTO request) { return hotelSearchService.confirmBooking(request); }
+    @PostMapping("/booking-details") public Mono<String> getBookingDetails(@RequestBody BookingDetailsRequestDTO request) { return hotelSearchService.getBookingDetails(request); }
+    @PostMapping("/initiate-booking") public Mono<String> initiateBooking(@RequestBody HotelBookingRequestDTO request, @RequestHeader(name = "Authorization", required = false) String authToken, @CookieValue(name = "anonymous-id", required = false) UUID anonymousId) { return hotelSearchService.initiateBooking(request, authToken, anonymousId); }
 }
