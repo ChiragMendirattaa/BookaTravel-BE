@@ -14,6 +14,14 @@ public class HotelTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "anonymous_user_id")
+    private AnonymousUser anonymousUser;
+
     @Column(length = 4000)
     private String bookingRequestData;
 
